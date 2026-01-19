@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Windows Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="header">
+	<div class="header-left">
+	    <img src="res/logo.png" alt="Store Logo">
+	    <a href="store.html" class="bgGreen"><h1>Home</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Top Charts</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Categories</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Collections</h1></a>
+	    <a href="account.html"class="topLink"><h1>Account</h1></a>
+	</div>
+	<div class="search-bar">
+    	<input type="text" id="search-input" onkeyup="searchApps()" placeholder="Search for apps...">
+        <i class="fa fa-search"></i>
+	</div>
+    </div>
+    <h1 class="pageTitle"><a id="back-button" class="back-button" onclick="history.back()"><img src="res/ui/back_button_default.png"></a>My Account</h1>
+    <a href="apps.html" class="invisibleLink"><button class="WindowsMetroUIButton">My apps</button></a>
+    <h2 class="sectionDivider">Family Safety</h2>
+    <div class="buttonIndent">
+        <a href="FamilySafety.xaml" class="invisibleLink"><button class="WindowsMetroUIButton">Set up Family Safety</button></a>
+        <a href="removeFamilySafety.xaml" class="invisibleLink"><button class="WindowsMetroUIButton">Disable Family Safety</button></a>
+    </div>
+    <h2 class="sectionDivider">Updates</h2>
+    <div class="buttonIndent">
+        <a href="comingSoon.xaml" class="invisibleLink"><button class="WindowsMetroUIButton">Update the Store</button></a>
+    </div>
+</body>
+</html>

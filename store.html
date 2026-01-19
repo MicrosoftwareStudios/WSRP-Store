@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Windows Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .search-bar {
+            position: relative;
+            display: inline-block;
+        }
+
+        #search-input {
+            padding-right: 30px; /* Space for the icon */
+            width: 300px;
+            height: 15px;
+            font-size: 16px;
+        }
+
+        .search-bar i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: gray;
+        }
+
+    </style>
+</head>
+
+<script>
+    function searchApps() {
+        var query = document.getElementById("search-input").value.toLowerCase();
+        var apps = document.getElementsByClassName("app-box");
+
+        for (var app of apps); {
+            var name = app.getAttribute("data-name");
+            var category = app.getAttribute("data-category");
+
+            if (name.includes(query) || category.includes(query)) {
+                app.style.display = "inline-block";
+        } else {
+                app.style.display = "none";
+        }
+</script>
+
+
+
+<script>
+    function loadXML() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://microsoftwarestudios.github.io/winstore/data.xml", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var xml;
+                if (typeof DOMParser !== "undefined") {
+                    xml = new DOMParser().parseFromString(xhr.responseText, "text/xml");
+                } else {
+                    xml = new ActiveXObject("Microsoft.XMLDOM");
+                    xml.async = false;
+                    xml.loadXML(xhr.responseText);
+                }
+
+                var apps = xml.getElementsByTagName("app");
+                var output = "";
+
+                for (var i = 0; i < apps.length; i++) {
+                    var nameElement = apps[i].getElementsByTagName("name")[0];
+                    var categoryElement = apps[i].getElementsByTagName("category")[0];
+                    var iconElement = apps[i].getElementsByTagName("icon")[0];
+                    var publisherElement = apps[i].getElementsByTagName("publisher")[0];
+                    var descriptionElement = apps[i].getElementsByTagName("description")[0];
+                    var installElement = apps[i].getElementsByTagName("install")[0];
+                    
+                    var name = nameElement ? nameElement.textContent : "Unknown";
+                    var category = categoryElement ? categoryElement.textContent : "Unknown";
+                    var icon = iconElement ? iconElement.textContent : "icons/default.png";
+                    var publisher = publisherElement ? publisherElement.textContent : "Unknown Publisher";
+                    var description = descriptionElement ? descriptionElement.textContent : "No description available.";
+                    var installLink = installElement ? installElement.textContent : "#";
+
+                    var featuresList = [];
+                    var featureNodes = apps[i].getElementsByTagName("features")[0];
+                    if (featureNodes) {
+                        var featureElements = featureNodes.getElementsByTagName("feature");
+                        for (var j = 0; j < featureElements.length; j++) {
+                            featuresList.push(featureElements[j].textContent);
+                        }
+                    }
+                    var features = featuresList.join(",");
+
+                    output += '<div class="app-box" onclick="redirectToAppPage(\'' + encodeURIComponent(name) + '\', \'' + encodeURIComponent(category) + '\', \'' + encodeURIComponent(icon) + '\', \'' + encodeURIComponent(publisher) + '\', \'' + encodeURIComponent(description) + '\', \'' + encodeURIComponent(features) + '\', \'' + encodeURIComponent(installLink) + '\')">';
+                    output += '<img src="' + icon + '" alt="' + name + '">';
+                    output += '<h3>' + name + '</h3>';
+                    output += '<p>' + category + '</p>';
+                    output += '</div>';
+                }
+                document.getElementById("app-list").innerHTML = output;
+            }
+        };
+        xhr.onerror = function () {
+            document.getElementById("app-list").innerHTML = "<p>Error loading app data.</p>";
+        };
+        xhr.send();
+    }
+
+    function redirectToAppPage(name, category, icon, publisher, description, features, install) {
+        var url = "appDesc.html?name=" + name + "&category=" + category + "&icon=" + icon + "&publisher=" + publisher + "&description=" + description + "&features=" + features + "&install=" + install;
+        window.location.href = url;
+    }
+
+    
+</script>
+
+
+<body>
+    <div class="header">
+	<div class="header-left">
+	    <img src="res/logo.png" alt="Store Logo">
+	    <a href="store.html" class="bgGreen"><h1>Home</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Top Charts</h1></a>
+	    <a href="comingSonn.xaml" class="topLink"><h1>Categories</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Collections</h1></a>
+	    <a href="account.html" class="topLink"><h1>Account</h1></a>
+	</div>
+	<div class="search-bar">
+    	<input type="text" id="search-input" onkeyup="searchApps()" placeholder="Search for apps...">
+        <a href="errorPage.xaml"><i class="fa fa-search"></i></a>
+	</div>
+    </div>
+    <h1 class="pageTitle">Store</h1>
+    <div id="app-list" class="store-container"></div>
+<script>
+    window.onload = function() {
+        loadXML();
+    };
+</script>
+</body>
+</html>

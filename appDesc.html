@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Windows Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .back-button {
+	padding-left: 10px;
+    padding-right: 20px;
+    float: left;
+    },
+.storeContent {
+    padding: 30px 60px;
+    font-family: "Segoe UI", sans-serif;
+    color: #000;
+}
+
+/* Back button */
+.back-button img {
+    width: 32px;
+    height: 32px;
+    padding-top: 25px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+/* Two-column layout using floats (IE11/WebView safe) */
+.details-shell {
+    overflow: hidden; /* clears floats */
+}
+
+/* LEFT COLUMN — all text */
+.details-left {
+    float: left;
+    width: 360px;
+    padding-top: 30px;
+}
+
+/* RIGHT COLUMN — preview image */
+.details-right {
+    float: left;
+    padding-left: 100px;
+    width: 420px;
+    padding-top: 30px;
+}
+
+/* Move the preview image into the right column */
+.app-box-img {
+    width: 100%;
+    height: auto;
+    border: none;
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Title */
+#app-container h1 {
+    font-size: 32px;
+    font-weight: 300;
+    margin: 0 0 10px 0;
+}
+
+/* Metadata (publisher, category, etc.) */
+#app-container p {
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+/* Install button */
+.install-btn {
+    display: inline-block;
+    margin: 10px 0 14px 0;
+    padding: 8px 20px;
+    background: #008a00;
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    border: none;
+}
+
+.install-btn:hover {
+    background: #096d09;
+}
+
+/* Description (3rd <p>) */
+#app-container p:nth-of-type(3) {
+    margin-top: 20px;
+    padding-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* "Features:" label */
+#app-container p:nth-of-type(4) {
+    margin-top: 20px;
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+/* Features list */
+#app-container ul {
+    margin-top: 6px;
+    padding-left: 18px;
+    font-size: 14px;
+    padding-top: 5px;
+}
+
+#app-container li {
+    margin-bottom: 4px;
+}
+</style>
+<script>
+    function getUrlParams() {
+        var params = {};
+        var queryString = window.location.search.substring(1);
+        var queryArray = queryString.split("&");
+
+        for (var i = 0; i < queryArray.length; i++) {
+            var pair = queryArray[i].split("=");
+            if (pair.length === 2) {
+                var key = unescape(pair[0]);
+                var value = unescape(pair[1] || "");
+                params[key] = value ? value : "";
+            }
+        }
+        return params;
+    }
+
+    function loadAppDetails() {
+        var params = getUrlParams();
+        var name = params["name"] || "Unknown App";
+        var category = params["category"] || "Unknown Category";
+        var icon = params["icon"] || "appRes/default.png";
+        var publisher = params["publisher"] || "Unknown Publisher";
+        var description = params["description"] || "No description available.";
+        var features = params["features"] ? String(params["features"]).split(",") : [];
+        var installLink = params["install"] || "#";
+
+        var appContainer = document.getElementById("app-container");
+        var detailsRight = document.getElementById("details-right");
+
+        if (detailsRight) {
+            detailsRight.innerHTML = "";
+
+            var iconElement = document.createElement("img");
+            iconElement.src = icon;
+            iconElement.className = "app-box-img";
+            detailsRight.appendChild(iconElement);
+
+            var publisherElement = document.createElement("p");
+            publisherElement.innerHTML = "Published by " + publisher;
+            detailsRight.appendChild(publisherElement);
+
+            var categoryElement = document.createElement("p");
+            categoryElement.innerHTML = "Category: " + category;
+            detailsRight.appendChild(categoryElement);
+        }
+
+        if (appContainer) {
+            appContainer.innerHTML = ""; // Clear existing content
+
+            var titleElement = document.createElement("h1");
+            titleElement.innerText = name;
+            appContainer.appendChild(titleElement);
+
+            var installButton = document.createElement("a");
+            installButton.href = installLink;
+            installButton.innerText = "Install";
+            installButton.className = "install-btn"; // Apply Metro styling
+            appContainer.appendChild(installButton);
+
+            var priceLabel = document.createElement("h4");
+            priceLabel.innerText = "Free";
+            appContainer.appendChild(priceLabel);
+
+            var descriptionElement = document.createElement("p");
+            descriptionElement.innerHTML = "<strong>Description</strong><br>" + description;
+            appContainer.appendChild(descriptionElement);
+
+            var featuresLabel = document.createElement("p");
+            featuresLabel.innerHTML = "<strong>Features</strong><br>";
+            appContainer.appendChild(featuresLabel);
+
+            var featuresList = document.createElement("ul");
+            for (var i = 0; i < features.length; i++) {
+                var featureItem = document.createElement("li");
+                featureItem.innerText = features[i];
+                featuresList.appendChild(featureItem);
+            }
+            appContainer.appendChild(featuresList);
+        }
+
+        // Force refresh
+        document.body.style.display = "none";
+        document.body.style.display = "block";
+    }
+
+    window.onload = function() {
+        setTimeout(loadAppDetails, 500);
+    };
+</script>
+
+
+</head>
+<body>
+    <div class="header">
+	<div class="header-left">
+	    <img src="res/logo.png" alt="Store Logo">
+	    <a href="store.html" class="bgGreen"><h1>Home</h1></a>
+	    <a href="errorPage.xaml" class="topLink"><h1>Top Charts</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Categories</h1></a>
+	    <a href="comingSoon.xaml" class="topLink"><h1>Collections</h1></a>
+	    <a href="account.html" class="topLink"><h1>Account</h1></a>
+	</div>
+	<div class="search-bar">
+    	<input type="text" id="search-input" onkeyup="searchApps()" placeholder="Search for apps...">
+        <i class="fa fa-search"></i>
+	</div>
+    </div>
+    <div class="storeContent">
+        <a id="back-button" class="back-button" onclick="history.back()">
+            <img src="res/ui/back_button_default.png">
+        </a>
+        <div class="details-shell">
+            <div id="app-container" class="details-left"></div>
+            <div id="details-right" class="details-right"></div>
+        </div>
+    </div>
+<script>
+
+    window.onload = function() {
+
+        setTimeout(loadAppDetails, 100);
+
+    };
+
+</script>
+</body>
+</html>
